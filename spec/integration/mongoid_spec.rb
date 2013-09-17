@@ -237,6 +237,31 @@ describe "Mongoid integration" do
             end
           end
         end
+
+        context "caching modified classes/objects" do
+          before(:each) do
+            @object = Monger.create!({ :name => "M1" })
+          end
+
+          let(:cached_object_fetcher) do
+            lambda do
+              @app.garner.options({ :expires_in => 5.minutes }) do
+                Monger.all.as_json
+              end
+            end
+          end
+
+          it "does not raise error when underlying classes are changed" do
+            json = Monger.all.as_json
+            cached_object_fetcher.call.should == json
+
+            class Monger
+              field :foo, :type => Boolean
+            end
+
+            cached_object_fetcher.call.should == json            
+          end
+        end
       end
     end
   end
