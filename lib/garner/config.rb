@@ -127,6 +127,9 @@ module Garner
 
     # Default cache expiration time.
     option(:expires_in, :default => nil)
+
+    # Default behavior on nil bindings
+    option(:whiny_nils, :default => true)
   end
 end
 

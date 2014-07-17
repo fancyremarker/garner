@@ -21,7 +21,11 @@ module Garner
 
     private
     def self.compound_key(bindings, key_hash)
-      binding_keys = bindings.map(&:garner_cache_key).compact
+      if Garner.config.whiny_nils
+        binding_keys = bindings.map(&:garner_cache_key).compact
+      else
+        binding_keys = bindings.compact.map(&:garner_cache_key).compact
+      end
 
       if binding_keys.size == bindings.size
         # All bindings have non-nil cache keys, proceed.
